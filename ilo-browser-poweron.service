@@ -1,0 +1,27 @@
+[Unit]
+Description=iLO 5 Firefox Auto Power-On + Console Login
+After=network-online.target graphical.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+
+# ── Required for Firefox to open a visible browser window ──
+# "yourusername" is replaced by install.sh with your actual username
+User=yourusername
+Environment=DISPLAY=:0
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+Environment=MOZ_HEADLESS=0
+
+ExecStart=/usr/bin/python3 /opt/ilo_poweron/ilo_browser_poweron.py
+
+Restart=on-failure
+RestartSec=30
+StartLimitIntervalSec=120
+StartLimitBurst=3
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=graphical.target
